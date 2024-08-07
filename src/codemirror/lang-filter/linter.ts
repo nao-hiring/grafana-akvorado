@@ -28,7 +28,9 @@ export const createLinter = (datasource: DataSource) => {
       JSON.stringify({ filter: code })
     );
 
-    if (!response.ok) return [];
+    if (!response.ok) {
+      return [];
+    }
 
     const data: ApiValidationResponse = response.data;
     return (

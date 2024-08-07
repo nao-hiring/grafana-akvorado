@@ -31,7 +31,9 @@ export const nodeRightMostChildBefore = (node: SyntaxNode | null, pos: number) =
   // Go to the right most child
   let n = node;
   for (;;) {
-    if (!n) break;
+    if (!n) {
+      break;
+    }
     if (!n.lastChild) {
       return n;
     }
@@ -60,7 +62,9 @@ export const createComplete =
       transform = (x: { label: string; detail?: string }) => x
     ) => {
       const response = await fn.call('/api/v0/console/filter/complete', JSON.stringify(payload));
-      if (!response.ok) return;
+      if (!response.ok) {
+        return;
+      }
       const data: ApiCompleteResult = response.data;
       completion.options = [
         ...completion.options,
