@@ -27,6 +27,6 @@
     {
       "path": "akvorado-root",
       "url": "{{ .JsonData.url }}"
-  }
-]
+    }
+  ]
 }

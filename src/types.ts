@@ -1,42 +1,44 @@
 import { DataSourceJsonData, FieldType } from '@grafana/data';
 import { DataQuery } from '@grafana/schema';
-export const DEFAULT_LIMIT = 10
+export const DEFAULT_LIMIT = 10;
 
 export interface MyQuery extends DataQuery {
   expression?: string;
   dimensions?: string[];
   type: string;
   limit: number;
-  unit: string,
+  unit: string;
   error: string | undefined;
 }
 
-
-export interface Field { name: string; type: FieldType; values: string[] | number[]; }
+export interface Field {
+  name: string;
+  type: FieldType;
+  values: string[] | number[];
+}
 
 export const DEFAULT_QUERY: Partial<MyQuery> = {
-  expression: "InIfBoundary = external",
-  type: "timeseries",
-  dimensions: ["SrcAS"],
+  expression: 'InIfBoundary = external',
+  type: 'timeseries',
+  dimensions: ['SrcAS'],
   limit: DEFAULT_LIMIT,
-  unit: "l3bps"
+  unit: 'l3bps',
 };
 export type ApiCompleteResult = {
   completions: Array<{ label: string; detail?: string; quoted: boolean }>;
 };
 
-
 export interface SandkeyResponse {
-  rows: string[][]
-  xps: number[]
-  nodes: string[]
-  links: Link[]
+  rows: string[][];
+  xps: number[];
+  nodes: string[];
+  links: Link[];
 }
 
 export interface Link {
-  source: string
-  target: string
-  xps: number
+  source: string;
+  target: string;
+  xps: number;
 }
 
 export interface TimeseriesResponse {
@@ -52,23 +54,22 @@ export interface TimeseriesResponse {
 }
 
 export interface Configuration {
-  defaultVisualizeOptions: DefaultVisualizeOptions
-  dimensions: string[]
-  dimensionsLimit: number
-  homepageTopWidgets: string[]
-  truncatable: string[]
-  version: string
+  defaultVisualizeOptions: DefaultVisualizeOptions;
+  dimensions: string[];
+  dimensionsLimit: number;
+  homepageTopWidgets: string[];
+  truncatable: string[];
+  version: string;
 }
 
 export interface DefaultVisualizeOptions {
-  graphType: string
-  start: string
-  end: string
-  filter: string
-  dimensions: string[]
-  limit: number
+  graphType: string;
+  start: string;
+  end: string;
+  filter: string;
+  dimensions: string[];
+  limit: number;
 }
-
 
 /**
  * These are options configured for each DataSource instance

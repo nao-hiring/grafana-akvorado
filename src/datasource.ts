@@ -13,13 +13,12 @@ import { DEFAULT_QUERY, Field, MyDataSourceOptions, MyQuery, SandkeyResponse, Ti
 import { lastValueFrom } from 'rxjs';
 import _ from 'lodash';
 
-
 const queryTypes: { [key: string]: string } = {
-  "timeseries": "/api/v0/console/graph/line",
-  "sankey": "/api/v0/console/graph/sankey",
+  timeseries: '/api/v0/console/graph/line',
+  sankey: '/api/v0/console/graph/sankey',
 };
 
-const queryUnits: string[] = ["l3bps", "pps"]
+const queryUnits: string[] = ['l3bps', 'pps'];
 
 export { queryTypes, queryUnits };
 
@@ -40,83 +39,70 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
     const from = range!.from.toISOString();
     const to = range!.to.toISOString();
 
-    const dataPromises = options.targets.map(async target => {
-
+    const dataPromises = options.targets.map(async (target) => {
       let fields: Field[] = [];
 
-
       const body = {
-        "bidirectional": false,
-        "dimensions": target.dimensions,
-        "end": to,
-        "filter": target.expression,
-        "limit": target.limit,
-        "points": 200,
-        "previous-period": false,
-        "start": from,
-        "truncate-v4": 32,
-        "truncate-v6": 128,
-        "units": target.unit
+        bidirectional: false,
+        dimensions: target.dimensions,
+        end: to,
+        filter: target.expression,
+        limit: target.limit,
+        points: 200,
+        'previous-period': false,
+        start: from,
+        'truncate-v4': 32,
+        'truncate-v6': 128,
+        units: target.unit,
       };
-      const endpoint: string = queryTypes[target.type]
-      if (target.error) { return this.emptyResponse() }
-      if (target.type === "timeseries") {
-        const response = await this.post<TimeseriesResponse>(
-          endpoint,
-          body,
-          "",
-        );
+      const endpoint: string = queryTypes[target.type];
+      if (target.error) {
+        return this.emptyResponse();
+      }
+      if (target.type === 'timeseries') {
+        const response = await this.post<TimeseriesResponse>(endpoint, body, '');
         fields.push({ name: 'Time', type: FieldType.time, values: response.data.t });
         response.data.rows.forEach((r, i) => {
           fields.push({ name: r[0], type: FieldType.number, values: response.data.points[i] });
         });
-
-      }
-      else if (target.type === "sankey") {
-        const response = await this.post<SandkeyResponse>(
-          endpoint,
-          body,
-          "",
-        );
+      } else if (target.type === 'sankey') {
+        const response = await this.post<SandkeyResponse>(endpoint, body, '');
         //Create a object per dimension
         target.dimensions?.forEach((d) => {
-          fields.push({ name: d, type: FieldType.string, values: [] as string[] })
-        })
+          fields.push({ name: d, type: FieldType.string, values: [] as string[] });
+        });
         //Create a object for value
-        fields.push({ name: "value", type: FieldType.number, values: [] as number[] })
+        fields.push({ name: 'value', type: FieldType.number, values: [] as number[] });
 
-        const data: SandkeyResponse = response.data
-        const rows: string[][] = data.rows
-        const xps: number[] = data.xps
+        const data: SandkeyResponse = response.data;
+        const rows: string[][] = data.rows;
+        const xps: number[] = data.xps;
         rows.forEach((row, rowIndex) => {
           row.forEach((value, index) => {
             //Add dimension value to column
             (fields[index].values as string[]).push(value);
             //Add value to xps column
           });
-          (fields[fields.length - 1].values as number[]).push(xps[rowIndex])
+          (fields[fields.length - 1].values as number[]).push(xps[rowIndex]);
         });
 
         const foramtedData = {
-          fields: fields
-        }
+          fields: fields,
+        };
         const frame = toDataFrame(foramtedData);
         frame.name = 'sankey';
-        return frame
-
+        return frame;
       } else {
-        console.log("Unknown query type")
+        console.log('Unknown query type');
       }
       return toDataFrame({
         name: 'l3bps',
         fields: fields,
-      })
-
+      });
     });
 
-    const data = await Promise.all(dataPromises)
-    return { data: data }
-
+    const data = await Promise.all(dataPromises);
+    return { data: data };
   }
 
   private emptyResponse() {
@@ -130,10 +116,10 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
     const response = getBackendSrv().fetch<T>({
       url: `${this.baseUrl}/akvorado-root${url}${params?.length ? `?${params}` : ''}`,
       data: body,
-      method: "POST",
+      method: 'POST',
     });
     return lastValueFrom(response);
-  };
+  }
 
   async request<T>(url: string, params?: string) {
     const response = getBackendSrv().fetch<T>({

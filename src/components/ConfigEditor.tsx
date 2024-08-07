@@ -7,7 +7,7 @@ interface Props extends DataSourcePluginOptionsEditorProps<MyDataSourceOptions, 
 
 export function ConfigEditor(props: Props) {
   const { onOptionsChange, options } = props;
-  const { jsonData} = options;
+  const { jsonData } = options;
 
   const onUrlChange = (event: ChangeEvent<HTMLInputElement>) => {
     onOptionsChange({
@@ -29,6 +29,7 @@ export function ConfigEditor(props: Props) {
           placeholder="Enter the akvorado console URL, e.g. https://akvorado.tools/"
           width={40}
         />
-      </InlineField></>
+      </InlineField>
+    </>
   );
 }
